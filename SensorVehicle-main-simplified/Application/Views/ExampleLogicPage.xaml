@@ -1,0 +1,105 @@
+﻿<Page
+    x:Class="Application.Views.ExampleLogicPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Style="{StaticResource PageStyle}"
+    xmlns:prismMvvm="using:Prism.Windows.Mvvm"
+    prismMvvm:ViewModelLocator.AutoWireViewModel="True" 
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:views="using:Application.Views"
+    xmlns:behaviors="using:Application.Behaviors"
+    xmlns:exampleLogic="using:ExampleLogic"
+    behaviors:NavigationViewHeaderBehavior.HeaderMode="Never"
+    Loaded="Page_Loaded"
+    mc:Ignorable="d">
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition />
+        </TransitionCollection>
+    </Page.Transitions>
+    <Page.Resources>
+        <!--DEMO LOGIC LIST ITEMS DataTemplate-->
+        <DataTemplate x:Key="ItemTemplate" x:DataType="exampleLogic:ExampleLogicBase">
+            <Grid Height="60">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="1" Margin="{StaticResource SmallLeftMargin}" VerticalAlignment="Center">
+                    <TextBlock Text="{x:Bind Details.Title}" Style="{ThemeResource ListTitleStyle}"/>
+                    <TextBlock Text="{x:Bind Details.DemoType}" Style="{StaticResource ListSubTitleStyle}"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <!--SELECTED DEMO LOGIC DETAILS (Specified in ExampleLogicDetailControl.xaml file)-->
+        <DataTemplate x:Key="DetailsTemplate">
+            <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                <views:ExampleLogicDetailControl MasterMenuItem="{Binding}"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="NoSelectionContentTemplate">
+            <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                <TextBlock
+                    x:Uid="ExampleLogic_NoSelection"
+                    Style="{StaticResource SubtitleTextBlockStyle}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    TextAlignment="Center"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="MasterHeaderTemplate">
+            <Grid Height="40">
+                <TextBlock
+                    x:Name="headerText"
+                    Text="{Binding}"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource ListTitleStyle}" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="MinimalMasterHeaderTemplate">
+            <Grid Height="40">
+                <TextBlock
+                    x:Name="headerText"
+                    Margin="96,0,0,0"
+                    Text="{Binding}"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource ListTitleStyle}" />
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid x:Name="ContentArea">
+        <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                    <VisualState>
+                        <VisualState.StateTriggers>
+                            <!--641 is the default CompactModeThresholdWidth in NavigationView -->
+                            <AdaptiveTrigger MinWindowWidth="641" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="MasterDetailsViewControl.MasterHeaderTemplate" Value="{StaticResource MasterHeaderTemplate}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+        <controls:MasterDetailsView
+            x:Name="MasterDetailsViewControl"
+            ItemsSource="{x:Bind ViewModel.ExampleLogics}"
+            SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
+            ItemTemplate="{StaticResource ItemTemplate}"
+            DetailsTemplate="{StaticResource DetailsTemplate}"
+            NoSelectionContentTemplate="{StaticResource NoSelectionContentTemplate}"
+            BorderBrush="Transparent"
+            MasterHeader="Example Logics"
+            MasterPaneWidth="250"
+            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
+            BackButtonBehavior="Automatic"
+            MasterHeaderTemplate="{StaticResource MinimalMasterHeaderTemplate}"/>
+    </Grid>
+</Page>

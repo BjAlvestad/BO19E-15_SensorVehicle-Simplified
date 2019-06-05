@@ -1,0 +1,427 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>VehicleEquipment</name>
+    </assembly>
+    <members>
+        <member name="M:VehicleEquipment.DistanceMeasurement.Lidar.HorizontalPoint.CompareTo(System.Object)">
+            <summary>
+            <para>Returns +1 if this instances angle is larger than obj angle.</para>
+            <para>Returns -1 if obj angle is larger than this instances angle.</para>
+            <para>(Returns 0 if they are the same).</para>
+            </summary>
+            <param name="obj">Object to compare to</param>
+            <returns></returns>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.RaiseNotificationForSelective">
+            <summary>
+            Selects if properties should raise notify property changed (so that they update automatically in GUI).
+            </summary>
+            <remarks>
+            Setting this to true will cause code to run less efficiently, since PropertyChanged-events will be fired at each value update.
+            </remarks>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.Power">
+            <summary>
+            Power On/Off for Lidar. <para />
+            Note that there is a 5 second startup delay after the Lidar receives power. 
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.Error">
+            <summary>
+            Contains error information (and error state).
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.Config">
+            <summary>
+            Contains misc. configuration options for LidarDistance like minimum value to accept, number of cycles to collect etc.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.RunCollector">
+            <summary>
+            Start/Stop collecting Lidar Data. This must be <see langword="true"/> for the lidar distances to update.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.LargestDistance">
+            <summary>
+            Gets the point with largest distance (in the currently selected <see cref="!:DefaultVerticalAngle"/>)
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.Fwd">
+            <summary>
+            Gets the distance towards the front (spanning a default opening angle). <para />
+            Internaly it uses <see cref="M:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.GetDistance(System.Single,System.Single,VehicleEquipment.DistanceMeasurement.Lidar.VerticalAngle,VehicleEquipment.DistanceMeasurement.Lidar.CalculationType)"/>, with from/to angle with <see cref="!:DefaultHalfBeamOpening"/> as -/+ offset from 0 degrees, and using <see cref="!:DefaultVerticalAngle"/>, <see cref="!:DefaultCalculationType"/>. 
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.Left">
+            <summary>
+            Gets the distance towards the left (spanning a default opening angle). <para />
+            Internaly it uses <see cref="M:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.GetDistance(System.Single,System.Single,VehicleEquipment.DistanceMeasurement.Lidar.VerticalAngle,VehicleEquipment.DistanceMeasurement.Lidar.CalculationType)"/>, with from/to angle with <see cref="!:DefaultHalfBeamOpening"/> as -/+ offset from 270 degrees, and using <see cref="!:DefaultVerticalAngle"/>, <see cref="!:DefaultCalculationType"/>. 
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.Right">
+            <summary>
+            Gets the distance towards the right (spanning a default opening angle). <para />
+            Internaly it uses <see cref="M:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.GetDistance(System.Single,System.Single,VehicleEquipment.DistanceMeasurement.Lidar.VerticalAngle,VehicleEquipment.DistanceMeasurement.Lidar.CalculationType)"/>, with from/to angle with <see cref="!:DefaultHalfBeamOpening"/> as -/+ offset from 90 degrees, and using <see cref="!:DefaultVerticalAngle"/>, <see cref="!:DefaultCalculationType"/>. 
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.Aft">
+            <summary>
+            Gets the distance towards the aft (spanning a default opening angle). <para />
+            Internaly it uses <see cref="M:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.GetDistance(System.Single,System.Single,VehicleEquipment.DistanceMeasurement.Lidar.VerticalAngle,VehicleEquipment.DistanceMeasurement.Lidar.CalculationType)"/>, with from/to angle with <see cref="!:DefaultHalfBeamOpening"/> as -/+ offset from 180 degrees, and using <see cref="!:DefaultVerticalAngle"/>, <see cref="!:DefaultCalculationType"/>. 
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.Distances">
+            <summary>
+            Collection of interpreted directions from Lidar.  <para />
+            Normally you would not need to interact with this collection directly (use the other provided methods instead - which performs calculations / extracts data from this collection for you). 
+            However the collection has been made available so that you extract data from it yourself, in ways that we have not provided methods for (e.g. to get closest distance). <para />
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.LastUpdate">
+            <summary>
+            The time when the last lidar distance update completed. (Or the time collector was started, if no collection has completed yet).
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.LastCollectionDuration">
+            <summary>
+            The duration elapsed while collecting data packets (in milliseconds) - for last distance update.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.LastDataInterpretationDuration">
+            <summary>
+            The duration elapsed while interpreting data packets (in milliseconds) - for last distance update.
+            </summary>
+        </member>
+        <member name="M:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.LargestDistanceInRange(System.Single,System.Single)">
+            <summary>
+            Gets the largest distance in the selected range. (The selected range is allowed to span zero). <para />
+            Note: Only the distances for the currently selected <see cref="!:DefaultVerticalAngle"/> are evaluated
+            </summary>
+            <param name="fromAngle">Left/from angle [0, 360)</param>
+            <param name="toAngle">Right/to angle (0, 360]</param>
+            <returns>Horizontal point with largest distance (contains both the distance and angle)</returns>
+        </member>
+        <member name="M:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.GetDistance(System.Single,System.Single,VehicleEquipment.DistanceMeasurement.Lidar.VerticalAngle,VehicleEquipment.DistanceMeasurement.Lidar.CalculationType)">
+            <summary>
+            Gets distance from a range based on specified CalculationType (e.g. smallest distance in range) <para />
+            To get a list of all distances in the range see <seealso cref="M:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.GetDistancesInRange(System.Single,System.Single,VehicleEquipment.DistanceMeasurement.Lidar.VerticalAngle)"/>
+            </summary>
+            <param name="fromAngle">From angle (horizontal)</param>
+            <param name="toAngle">To angle (horizontal)</param>
+            <param name="verticalAngle">The vertical to evaluate distances for</param>
+            <param name="calculationType">Type of distance to be selected (e.g. smallest, largest, average etc.)</param>
+            <returns>Distance in range based on selected calculation type</returns>
+        </member>
+        <member name="M:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.GetDistancesInRange(System.Single,System.Single,VehicleEquipment.DistanceMeasurement.Lidar.VerticalAngle)">
+            <summary>
+            Get a list of all distances in specified range (for the specified vertical angle) <para />
+            To also get the angles in addtition to the distances, see <seealso cref="M:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.GetHorizontalPointsInRange(System.Single,System.Single,VehicleEquipment.DistanceMeasurement.Lidar.VerticalAngle)"/>
+            </summary>
+            <param name="fromAngle">From angle (horizontal)</param>
+            <param name="toAngle">To angle (horizontal)</param>
+            <param name="verticalAngle">The vertical to evaluate distances for</param>
+            <returns>A list of all distances in the specified range (for the specified vertical angle)</returns>
+        </member>
+        <member name="M:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.GetHorizontalPointsInRange(System.Single,System.Single,VehicleEquipment.DistanceMeasurement.Lidar.VerticalAngle)">
+            <summary>
+            Get a list of all horizontal points (distance and horizontal angle) in specified range (for the specified vertical angle) <para />
+            To get a list of only the distances, use <see cref="M:VehicleEquipment.DistanceMeasurement.Lidar.ILidarDistance.GetDistancesInRange(System.Single,System.Single,VehicleEquipment.DistanceMeasurement.Lidar.VerticalAngle)"/> instead.
+            </summary>
+            <param name="fromAngle">From angle (horizontal)</param>
+            <param name="toAngle">To angle (horizontal)</param>
+            <param name="verticalAngle">The vertical to evaluate distances for</param>
+            <returns>A list of all horizontal points (distance and horizontal angle) in the specified range (for the specified vertical angle)</returns>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.LidarDistanceConfiguration.ActiveVerticalAngles">
+            <summary>
+            The vertical angles that is in use from the lidar. (Only angles added to this list will be calculated).
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.LidarDistanceConfiguration.MinRange">
+            <summary>
+            Minimum range for lidar. Distances below this range will be discarded. <para />
+            The manual states 1 meter as minimum range. When testing the Lidar measures accurately down to 0.5 meters. Distances below 0.5 seems to be discarded by the lidar itself.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.LidarDistanceConfiguration.MaxRange">
+            <summary>
+            Maximum range for lidar. Currently not used in code, but may later be implemented for ignoring distances above selected value. <para />
+            The manual states that 100 meters is maximum range.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.LidarDistanceConfiguration.DefaultCalculationType">
+            <summary>
+            Calculation that is used by default when returning a single distance over a range (e.g. Fwd or Left)
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.LidarDistanceConfiguration.DefaultVerticalAngle">
+            <summary>
+            The vertical angle to use distances from, when no vertical angle is explicitly specified
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.LidarDistanceConfiguration.DefaultHalfBeamOpening">
+            <summary>
+            Specifies the width over which the Fwd, Left, Right and Aft distances are measured (e.g. 15 will cause Fwd to measure from 345 to 15 degrees)
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Lidar.LidarDistanceConfiguration.NumberOfCycles">
+            <summary>
+            The number of lidar revolutions to collect distances over before they become accessible for use <para />
+            Higher number of cycles gives better resolution, but also longer delay between each update.
+            </summary>
+        </member>
+        <member name="T:VehicleEquipment.DistanceMeasurement.Lidar.VerticalAngle">
+            <summary>
+            <para>The Lidars vertical angle from center</para>
+            <para>(The enum values correspond to channel number in datablock containing the distance for the named vertical angle)</para>
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.Power">
+            <summary>
+            Allow/Block ultrasonic controller from communicating with the main program via I2c. <para />
+            Note that this will not power the micro-controller off, since it is required for anti-collision protection, which is running internally between the wheel and encoder micro-controller.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.Left">
+            <summary>
+            Get distance to the Left (in meters). <para />
+            Returns the distance from local storage, unless new data is available on micro-controller. In which case it first gets new data for all directions and stores them localy, before returning the value from local storage.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.Fwd">
+            <summary>
+            Get smallest of the distances to the front from <see cref="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.FwdLeft"/> and <see cref="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.FwdRight"/> (in meters). <para />
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.FwdLeft">
+            <summary>
+            Get distance to the front (from the fwd sensor mounted to the left of center-line). <para />
+            Returns the distance from local storage, unless new data is available on micro-controller. In which case it first gets new data for all directions and stores them localy, before returning the value from local storage.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.FwdRight">
+            <summary>
+            Get distance to the front (from the fwd sensor mounted to the right of center-line). <para />
+            Returns the distance from local storage, unless new data is available on micro-controller. In which case it first gets new data for all directions and stores them localy, before returning the value from local storage.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.Right">
+            <summary>
+            Get distance to the right (in meters). <para />
+            Returns the distance from local storage, unless new data is available on micro-controller. In which case it first gets new data for all directions and stores them localy, before returning the value from local storage.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.TimeStamp">
+            <summary>
+            The time when last collection of data from micro-controller occured.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.RaiseNotificationForSelective">
+            <summary>
+            Selects if distance and time properties should raise notify property changed (so that they update automatically in GUI).
+            </summary>
+            <remarks>
+            Setting this to true will cause code to run less efficiently, since PropertyChanged-events will be fired at each value update.
+            </remarks>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.Error">
+            <summary>
+            Contains error information (and error state).
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.RefreshUltrasonicContinously">
+            <summary>
+            When set to true: new distance data is collected from micro-controller as soon as new data is available (notified via pin-interupt). <para />
+            When set to false: new distance data is collected only when requested (e.g. by calling <see cref="P:VehicleEquipment.DistanceMeasurement.Ultrasound.IUltrasonic.Fwd"/>) - but still only if new data is available.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.Encoder.LastRequestTimeStamp">
+            <summary>
+            The point in time at which data was last collected from encoders. <para />
+            I.e. last successfull call to <see cref="M:VehicleEquipment.Locomotion.Encoder.Encoder.CollectAndResetDistanceFromEncoder"/>
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.Encoder.TimeAccumulatedForLastRequest">
+            <summary>
+            The time span the last collected data was collected over (in milliseconds). <para />
+            I.e. time accumulated by the micro-controller since last call to <see cref="M:VehicleEquipment.Locomotion.Encoder.Encoder.CollectAndResetDistanceFromEncoder"/>
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.Encoder.TotalTime">
+            <summary>
+            Total time accumulated since last call to <see cref="M:VehicleEquipment.Locomotion.Encoder.Encoder.ResetTotalDistanceTraveled"/>
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.Encoder.DistanceAtLastRequest">
+            <summary>
+            The distance traveled received from the micro-controller at last call to <see cref="M:VehicleEquipment.Locomotion.Encoder.Encoder.CollectAndResetDistanceFromEncoder"/>
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.Encoder.TotalDistanceTravelled">
+            <summary>
+            Total distance accumulated since last call to <see cref="M:VehicleEquipment.Locomotion.Encoder.Encoder.ResetTotalDistanceTraveled"/>
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.Encoder.AvgVel">
+            <summary>
+            Average velocity based on last data collected from micro-controller. <para />
+            Note that this is an average based on the total time accumulated on the micro-controller. 
+            This value will not be a good representation of the vehicles speed unless two consecutive calls to <see cref="M:VehicleEquipment.Locomotion.Encoder.Encoder.CollectAndResetDistanceFromEncoder"/> are performed, while the vehicle is not accelerating.
+            </summary>
+            <remarks>
+            Average velocity is calculated from <see cref="P:VehicleEquipment.Locomotion.Encoder.Encoder.TimeAccumulatedForLastRequest"/> and <see cref="P:VehicleEquipment.Locomotion.Encoder.Encoder.DistanceAtLastRequest"/>
+            </remarks>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.Encoder.Message">
+            <summary>
+            Message code received from encoder.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.IEncoders.RaiseNotificationForSelective">
+            <summary>
+            Selects if distance and time properties should raise notify property changed (so that they update automatically in GUI).
+            </summary>
+            <remarks>
+            Setting this to true will cause code to run less efficiently, since PropertyChanged-events will be fired at each value update.
+            </remarks>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.IEncoders.Power">
+            <summary>
+            Power On/Off for encoder micro-controllers
+            </summary>
+            <remarks>
+            Micro-controllers may take some seconds to start up.
+            </remarks>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.IEncoders.Error">
+            <summary>
+            Accumulated error state and message for Left and Right encoder. <para />
+            State gets set set after each call to <see cref="M:VehicleEquipment.Locomotion.Encoder.IEncoders.CollectAndResetDistanceFromEncoders"/> (manual or automatic).
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.IEncoders.Left">
+            <summary>
+            Data from / state for Left Encoder
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.IEncoders.Right">
+            <summary>
+            Data from / state for Right Encoder
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.IEncoders.CollectionInterval">
+            <summary>
+            The interval at whitch <see cref="M:VehicleEquipment.Locomotion.Encoder.IEncoders.CollectAndResetDistanceFromEncoders"/> gets called when <see cref="P:VehicleEquipment.Locomotion.Encoder.IEncoders.CollectContinously"/> is set to true.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Encoder.IEncoders.CollectContinously">
+            <summary>
+            When set to true, <see cref="M:VehicleEquipment.Locomotion.Encoder.IEncoders.CollectAndResetDistanceFromEncoders"/> will be called at a fixed time interval specified in <see cref="P:VehicleEquipment.Locomotion.Encoder.IEncoders.CollectionInterval"/>
+            </summary>
+        </member>
+        <member name="M:VehicleEquipment.Locomotion.Encoder.IEncoders.ResetTotalDistanceTraveled">
+            <summary>
+            Resets the total distance traveled from Left and Right encoders. <para />
+            This will not affect the distance accumulated on the micro-controller since last collect using <see cref="M:VehicleEquipment.Locomotion.Encoder.IEncoders.CollectAndResetDistanceFromEncoders"/>.
+            </summary>
+        </member>
+        <member name="M:VehicleEquipment.Locomotion.Encoder.IEncoders.CollectAndResetDistanceFromEncoders">
+            <summary>
+            Collects distance accumulated on micro-controller since last request, and adds it to total distance traveled. <para />
+            If there is an unacnowledged error in <see cref="P:VehicleEquipment.Locomotion.Encoder.IEncoders.Error"/> the method will simply return, after switching off automatic collection, if it was running.
+            </summary>
+        </member>
+        <member name="M:VehicleEquipment.Locomotion.Encoder.IEncoders.ClearAllEncoderErrors">
+            <summary>
+            Clears any active errors for the encoders.
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Wheels.IWheel.RaiseNotificationForSelective">
+            <summary>
+            Selects if properties should raise notify property changed (so that they update automatically in GUI).
+            </summary>
+            <remarks>
+            Setting this to true will cause code to run less efficiently, since PropertyChanged-events will be fired at each value update.
+            </remarks>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Wheels.IWheel.Power">
+            <summary>
+            Powers the wheels on or off. 
+            </summary>
+            <remarks>
+            Micro-controller may take some seconds to start up.
+            </remarks>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Wheels.IWheel.CurrentSpeedLeft">
+            <summary>
+            Gets last left wheel power request sent to Wheel micro-controller.
+            </summary>
+            <remarks>
+            This value is NOT collected from the actual micro-controller. It is just the last request that was sent to the micro-controller.<para />
+            (The actual power on the wheels may be lower. There is a safety function running between the micro-controllers that reduces power when an obstruction is too close.)
+            </remarks>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Wheels.IWheel.CurrentSpeedRight">
+            <summary>
+            Gets last right wheel power request sent to Wheel micro-controller.
+            </summary>
+            <remarks>
+            This value is NOT collected from the actual micro-controller. It is just the last request that was sent to the micro-controller.<para />
+            (The actual power on the wheels may be lower. There is a safety function running between the micro-controllers that reduces power when an obstruction is too close.)
+            </remarks>
+        </member>
+        <member name="M:VehicleEquipment.Locomotion.Wheels.IWheel.SetSpeed(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Sets wheel power with specific values.
+            </summary>
+            <param name="leftValue">Power percentage on Left Wheel in range [-100, 100]</param>
+            <param name="rightValue">Power percentage on Right Wheel in range [-100, 100]</param>
+            <param name="onlySendIfValuesChanged">
+            If true (default): new power command will be applied ONLY if it is different than previous. This limits data traffic on communication line.<para />
+            If false: new power command will ALWAYS be sent.<para />
+            WARNING: when setting this to false, make sure that the command is not sent too often as it may bog down the communication line.
+            </param>
+        </member>
+        <member name="M:VehicleEquipment.Locomotion.Wheels.IWheel.Fwd(System.Int32)">
+            <summary>
+            Sets wheel power to forward.
+            </summary>
+            <param name="speed">Speed percentage to set in range [0, 100]</param>
+        </member>
+        <member name="M:VehicleEquipment.Locomotion.Wheels.IWheel.TurnLeft(System.Int32)">
+            <summary>
+            Sets wheel power to turn left.
+            </summary>
+            <param name="speed">Speed percentage to turn in range [0, 100]</param>
+        </member>
+        <member name="M:VehicleEquipment.Locomotion.Wheels.IWheel.TurnRight(System.Int32)">
+            <summary>
+            Sets wheel power to turn right
+            </summary>
+            <param name="speed">Speed percentage to turn in range [0, 100]</param>
+        </member>
+        <member name="M:VehicleEquipment.Locomotion.Wheels.IWheel.Reverse(System.Int32)">
+            <summary>
+            Sets wheel power to reverse.
+            </summary>
+            <param name="speed">Speed percentage to in range [0, 100]</param>
+        </member>
+        <member name="M:VehicleEquipment.Locomotion.Wheels.IWheel.Stop">
+            <summary>
+            <para> Stops wheels (sends command to micro-controller if the previous wheel command was not the same).</para>
+            To force a new stop signal to be sent regardless, use <see cref="M:VehicleEquipment.Locomotion.Wheels.IWheel.SetSpeed(System.Int32,System.Int32,System.Boolean)"/> with boolean instead. 
+            </summary>
+        </member>
+        <member name="P:VehicleEquipment.Locomotion.Wheels.IWheel.Error">
+            <summary>
+            Contains error information (and error state).
+            </summary>
+        </member>
+        <member name="T:VehicleEquipment.MessageCode">
+            <summary>
+            Messages to/from vehicle (valid values [0, 255])
+            </summary>
+        </member>
+    </members>
+</doc>

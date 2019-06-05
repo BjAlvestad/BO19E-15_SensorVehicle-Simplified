@@ -1,0 +1,209 @@
+﻿<Page
+    x:Class="Application.Views.WheelsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Style="{StaticResource PageStyle}"
+    xmlns:prismMvvm="using:Prism.Windows.Mvvm"
+    prismMvvm:ViewModelLocator.AutoWireViewModel="True" 
+    mc:Ignorable="d">
+    <Grid
+        x:Name="ContentArea"
+        Margin="{StaticResource MediumLeftRightMargin}">
+        <Grid
+            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+            <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
+                Place your content here.-->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!--WHEELS MANUAL CONTROL-->
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <RelativePanel
+                    Visibility="{x:Bind ViewModel.Wheel.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Button x:Name="StopWheelButton" Content="Stop wheels" FontSize="39" Click="{x:Bind ViewModel.StopWheels}" RelativePanel.AlignTopWithPanel="True"/>
+                    <Slider Value="{x:Bind ViewModel.LeftWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" StepFrequency="5" MinHeight="200"
+                            RelativePanel.Below="StopWheelButton" RelativePanel.AlignLeftWith="StopWheelButton"/>
+
+                    <Slider Value="{x:Bind ViewModel.RightWheel, Mode=TwoWay }" Orientation="Vertical" Minimum="-100" Maximum="100" StepFrequency="5" MinHeight="200"
+                            RelativePanel.Below="StopWheelButton" RelativePanel.AlignRightWith="StopWheelButton"/>
+
+                    <StackPanel RelativePanel.Below="StopWheelButton" RelativePanel.AlignHorizontalCenterWith="StopWheelButton">
+                        <ToggleSwitch Header="Auto-apply speed" Width="130" Margin="0,10" OffContent="Manual" OnContent="Automatic" IsOn="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=TwoWay}" />
+                        <Button Content="Apply new speed" Click="{x:Bind ViewModel.ApplyNewWheelSpeed}"
+                                Visibility="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"/>
+                        <StackPanel Visibility="{x:Bind ViewModel.ApplyWheelSpeedContinously, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="Update interval:" FontWeight="SemiBold" />
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox SelectedItem="{x:Bind ViewModel.UpdateInterval, Mode=TwoWay}" >
+                                    <x:Int32>50</x:Int32>
+                                    <x:Int32>100</x:Int32>
+                                    <x:Int32>300</x:Int32>
+                                    <x:Int32>500</x:Int32>
+                                    <x:Int32>1000</x:Int32>
+                                    <x:Int32>5000</x:Int32>
+                                </ComboBox>
+                                <TextBlock Text="ms" Margin="10,0"  VerticalAlignment="Center" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </RelativePanel>
+                <StackPanel Visibility="{x:Bind ViewModel.Wheel.Power, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}">
+                    <TextBlock Text="Motor controller is off" FontSize="18" FontWeight="Bold" Foreground="Red" />
+                    <ToggleButton Content="Tap here to power up" FontSize="18" IsChecked="{x:Bind ViewModel.Wheel.Power, Mode=TwoWay}" />
+                </StackPanel>
+            </StackPanel>
+
+            <!--WHEEL AND ENCODER DATA-->
+            <StackPanel Grid.Row="0" Grid.Column="2">
+                <!--WHEEL DATA-->
+                <RelativePanel Margin="0,0,0,30" Visibility="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock x:Name="WheelHeading"  Text="POWER:" FontWeight="Bold" Margin="0,0,44,0" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWithPanel="True"/>
+                    <TextBlock x:Name="LeftWheel" Text="Left" FontWeight="Bold" Margin="30,0" RelativePanel.AlignVerticalCenterWith="WheelHeading" RelativePanel.RightOf="WheelHeading" />
+                    <TextBlock x:Name="RightWheel" Text="Right" FontWeight="Bold" RelativePanel.AlignVerticalCenterWith="WheelHeading" RelativePanel.RightOf="LeftWheel" />
+
+                    <TextBlock x:Name="WheelRequest" Text="Requested [%]:" RelativePanel.Below="WheelHeading" RelativePanel.AlignLeftWith="WheelHeading" />
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedLeft, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="WheelRequest" RelativePanel.AlignHorizontalCenterWith="LeftWheel" />
+                    <TextBlock Text="{x:Bind ViewModel.Wheel.CurrentSpeedRight, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="WheelRequest" RelativePanel.AlignHorizontalCenterWith="RightWheel" />
+
+                    <TextBlock x:Name="WheelActual" Text="Actual [%]:" RelativePanel.Below="WheelRequest" RelativePanel.AlignLeftWith="WheelHeading" />              
+                    <TextBlock Text="ToDo"
+                               RelativePanel.AlignVerticalCenterWith="WheelActual" RelativePanel.AlignHorizontalCenterWith="LeftWheel" />
+                    <TextBlock Text="ToDo"
+                               RelativePanel.AlignVerticalCenterWith="WheelActual" RelativePanel.AlignHorizontalCenterWith="RightWheel" />
+                </RelativePanel>
+
+                <!--ENCODER DATA-->
+                <RelativePanel Visibility="{x:Bind ViewModel.Encoders.RaiseNotificationForSelective, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                    <TextBlock x:Name="EncoderHeading"  Text="ENCODER:" FontWeight="Bold" Margin="0,0,30,0" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWithPanel="True"/>
+                    <TextBlock x:Name="LeftEncoder" Text="Left" FontWeight="Bold" Margin="30,0" RelativePanel.AlignVerticalCenterWith="EncoderHeading" RelativePanel.RightOf="EncoderHeading" />
+                    <TextBlock x:Name="RightEncoder" Text="Right" FontWeight="Bold" RelativePanel.AlignVerticalCenterWith="EncoderHeading" RelativePanel.RightOf="LeftEncoder" />
+
+                    <TextBlock x:Name="TotalText" Text="Total:" FontWeight="Bold" Margin="0, 5, 0, 0" RelativePanel.Below="LeftEncoder" RelativePanel.AlignLeftWith="EncoderHeading"/>
+
+                    <TextBlock x:Name="TotalDistanceText" Text="Distance [cm]:" RelativePanel.Below="TotalText" RelativePanel.AlignLeftWith="TotalText"/>
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.TotalDistanceTravelled, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="TotalDistanceText" RelativePanel.AlignHorizontalCenterWith="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TotalDistanceTravelled, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="TotalDistanceText" RelativePanel.AlignHorizontalCenterWith="RightEncoder" />
+
+                    <TextBlock x:Name="TotalDurationText" Text="Duration:" RelativePanel.Below="TotalDistanceText" RelativePanel.AlignLeftWith="TotalText"/>
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.TotalTime, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:hh\\\\:mm\\\\:ss}'}"
+                               RelativePanel.AlignVerticalCenterWith="TotalDurationText" RelativePanel.AlignHorizontalCenterWith="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TotalTime, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:hh\\\\:mm\\\\:ss}'}"
+                               RelativePanel.AlignVerticalCenterWith="TotalDurationText" RelativePanel.AlignHorizontalCenterWith="RightEncoder" />
+
+                    <Button x:Name="ResetTotalDistanceBtn" Content="Reset total distance traveled" Margin="0,10" Click="{x:Bind ViewModel.Encoders.ResetTotalDistanceTraveled}"
+                            RelativePanel.Below="TotalDurationText"/>
+
+                    <TextBlock x:Name="LastText" Text="Last collected:" FontWeight="Bold" Margin="0, 5, 0, 0" RelativePanel.Below="ResetTotalDistanceBtn" RelativePanel.AlignLeftWith="EncoderHeading"/>
+
+                    <TextBlock x:Name="LastDistanceText"  Text="Distance [cm]:" RelativePanel.Below="LastText" RelativePanel.AlignLeftWith="LastText" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.DistanceAtLastRequest, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="LastDistanceText" RelativePanel.AlignHorizontalCenterWith="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.DistanceAtLastRequest, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="LastDistanceText" RelativePanel.AlignHorizontalCenterWith="RightEncoder" />
+
+                    <TextBlock x:Name="LastDurationText" Text="Duration: [ms]:"  RelativePanel.Below="LastDistanceText" RelativePanel.AlignLeftWith="LastText" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.TimeAccumulatedForLastRequest, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="LastDurationText" RelativePanel.AlignHorizontalCenterWith="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.TimeAccumulatedForLastRequest, Mode=OneWay}"
+                               RelativePanel.AlignVerticalCenterWith="LastDurationText" RelativePanel.AlignHorizontalCenterWith="RightEncoder" />
+
+                    <TextBlock x:Name="VelocityText" Text="Velocity [cm/s]:"  RelativePanel.Below="LastDurationText" RelativePanel.AlignLeftWith="LastText" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Left.AvgVel, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:F1}'}"
+                               RelativePanel.AlignVerticalCenterWith="VelocityText" RelativePanel.AlignHorizontalCenterWith="LeftEncoder" />
+                    <TextBlock Text="{x:Bind ViewModel.Encoders.Right.AvgVel, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:F1}'}"
+                               RelativePanel.AlignVerticalCenterWith="VelocityText" RelativePanel.AlignHorizontalCenterWith="RightEncoder" />
+
+                    <StackPanel RelativePanel.Below="VelocityText" Margin="0,5"
+                        Visibility="{x:Bind ViewModel.Encoders.CollectContinously, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock Text="Collection interval:" FontWeight="SemiBold" />
+                        <StackPanel Orientation="Horizontal">
+                            <ComboBox SelectedItem="{x:Bind ViewModel.Encoders.CollectionInterval, Mode=TwoWay}" >
+                                <x:Int32>50</x:Int32>
+                                <x:Int32>100</x:Int32>
+                                <x:Int32>300</x:Int32>
+                                <x:Int32>500</x:Int32>
+                                <x:Int32>1000</x:Int32>
+                                <x:Int32>10000</x:Int32>
+                            </ComboBox>
+                            <TextBlock Text="ms" Margin="10,0"  VerticalAlignment="Center" />
+                        </StackPanel>
+                    </StackPanel>
+                    <Button Content="Collect now" Click="{x:Bind ViewModel.Encoders.CollectAndResetDistanceFromEncoders}"
+                            Visibility="{x:Bind ViewModel.Encoders.CollectContinously, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}"
+                            RelativePanel.Below="VelocityText" Margin="0,5" />
+                </RelativePanel>
+            </StackPanel>
+
+            <!--SELECTOR SWITCHES box (contains switches for power, to raise selective property changed etc.)-->
+            <StackPanel  Grid.Row="0" Grid.Column="4">
+                <TextBlock Text="Motor:" FontSize="18" FontWeight="Bold" />
+                <ToggleSwitch OffContent="Powered off" OnContent="Powered on" IsOn="{x:Bind ViewModel.Wheel.Power, Mode=TwoWay}" />
+                <ToggleSwitch Header="Display wheel data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Wheel.RaiseNotificationForSelective, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.Wheel.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <TextBlock Text="Encoder:" FontSize="18" FontWeight="Bold" Margin="0,10,0,0" />
+                <ToggleSwitch OffContent="Powered off" OnContent="Powered on" IsOn="{x:Bind ViewModel.Encoders.Power, Mode=TwoWay}" />
+                <StackPanel Visibility="{x:Bind ViewModel.Encoders.Power, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ToggleSwitch Header="Display distance data" OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.Encoders.RaiseNotificationForSelective, Mode=TwoWay}" />
+                    <ToggleSwitch Header="Autocollect distance" OffContent="Off" OnContent="Collecting" IsOn="{x:Bind ViewModel.Encoders.CollectContinously, Mode=TwoWay}" />
+                </StackPanel>
+            </StackPanel>
+
+            <!--ERROR MESSAGE box (displays error messages from Wheel and Encoders)-->
+            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Padding="0,15,0,10"
+                        Visibility="{x:Bind ViewModel.UnacknowledgedWheelOrEncoderError, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="An error has occured:" FontWeight="ExtraBold" Foreground="Red" />
+                <ScrollViewer MaxHeight="300"
+                              ZoomMode="Enabled" MinZoomFactor="0.5" MaxZoomFactor="1.5"
+                              VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible">
+                    <StackPanel>
+                        <!--Wheel-->
+                        <StackPanel Visibility="{x:Bind ViewModel.Wheel.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="** WHEEL ERROR **:" FontWeight="SemiBold" Foreground="Red" />
+                            <TextBlock Text="{x:Bind ViewModel.Wheel.Error.Message, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                                       Visibility="{x:Bind ViewModel.Wheel.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}" />
+                            <TextBlock Text="{x:Bind ViewModel.Wheel.Error.DetailedMessage, Mode=OneWay}" TextWrapping="Wrap"  Foreground="Red"
+                                       Visibility="{x:Bind ViewModel.Wheel.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <TextBlock Text="&#x0a;"
+                                       Visibility="{x:Bind ViewModel.Encoders.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}" />
+                        </StackPanel>
+                        <!--Encoder-->
+                        <StackPanel Visibility="{x:Bind ViewModel.Encoders.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="** ENCODERS ERROR **:" FontWeight="SemiBold" Foreground="Red" />
+                            <TextBlock Text="{x:Bind ViewModel.Encoders.Error.Message, Mode=OneWay}" TextWrapping="Wrap" Foreground="Red"
+                                       Visibility="{x:Bind ViewModel.Encoders.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}" />
+                            <TextBlock Text="{x:Bind ViewModel.Encoders.Error.DetailedMessage, Mode=OneWay}" TextWrapping="Wrap"  Foreground="Red"
+                                       Visibility="{x:Bind ViewModel.Encoders.Error.ShowDetailedMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+                <StackPanel Orientation="Horizontal" Spacing="20" Padding="0,5,0,0">
+                    <ToggleButton Content="Wheel details" IsChecked="{x:Bind ViewModel.Wheel.Error.ShowDetailedMessage, Mode=TwoWay}"
+                                  Visibility="{x:Bind ViewModel.Wheel.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <ToggleButton Content="Encoder details" IsChecked="{x:Bind ViewModel.Encoders.Error.ShowDetailedMessage, Mode=TwoWay}"
+                                  Visibility="{x:Bind ViewModel.Encoders.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <Button Content="Clear Wheel error" Click="{x:Bind ViewModel.Wheel.Error.Clear, Mode=OneWay}"
+                            Visibility="{x:Bind ViewModel.Wheel.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <Button Content="Clear Encoder error" Click="{x:Bind ViewModel.Encoders.ClearAllEncoderErrors, Mode=OneWay}"
+                            Visibility="{x:Bind ViewModel.Encoders.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

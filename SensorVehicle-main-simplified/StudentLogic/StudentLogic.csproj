@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Helpers">
+      <HintPath>..\BO19E-15_Libraries\Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="VehicleEquipment">
+      <HintPath>..\BO19E-15_Libraries\VehicleEquipment.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

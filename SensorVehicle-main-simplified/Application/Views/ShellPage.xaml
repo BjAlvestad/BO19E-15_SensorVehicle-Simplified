@@ -1,0 +1,110 @@
+﻿<Page
+    x:Class="Application.Views.ShellPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    xmlns:prismMvvm="using:Prism.Windows.Mvvm"
+    prismMvvm:ViewModelLocator.AutoWireViewModel="True"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:helpers="using:Application.Helpers"
+    xmlns:behaviors="using:Application.Behaviors"
+    mc:Ignorable="d">
+
+    <winui:NavigationView
+        x:Name="navigationView"
+        IsBackButtonVisible="Visible"
+        IsBackEnabled="{x:Bind ViewModel.IsBackEnabled, Mode=OneWay}"
+        SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
+        IsSettingsVisible="True"
+        Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+        <winui:NavigationView.MenuItems>
+            <winui:NavigationViewItem x:Uid="Shell_Info" helpers:NavHelper.NavigateTo="Info">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE946;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+
+            <winui:NavigationViewItem x:Uid="Shell_ExampleLogic" helpers:NavHelper.NavigateTo="ExampleLogic"
+                                      Background="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.RunExampleLogic, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
+                                      BorderBrush="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5"
+                                      Visibility="{x:Bind ViewModel.StudentLogic.ActiveStudentLogic.RunStudentLogic, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xEBDA;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+
+            <winui:NavigationViewItem x:Uid="Shell_StudentLogic" helpers:NavHelper.NavigateTo="StudentLogic"
+                                      Background="{x:Bind ViewModel.StudentLogic.ActiveStudentLogic.RunStudentLogic, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
+                                      BorderBrush="{x:Bind ViewModel.StudentLogic.ActiveStudentLogic.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5"
+                                      Visibility="{x:Bind ViewModel.ExampleLogic.ActiveExampleLogic.RunExampleLogic, Mode=OneWay, Converter={StaticResource BooleanNegationToVisibilityConverter}}">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE7BE;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+
+            <winui:NavigationViewItem x:Uid="Shell_EquipmentOverview" helpers:NavHelper.NavigateTo="EquipmentOverview">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xEC47;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+
+            <winui:NavigationViewItem x:Uid="Shell_Wheels" helpers:NavHelper.NavigateTo="Wheels"
+                                      Background="{x:Bind ViewModel.Wheel.Power, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
+                                      BorderBrush="{x:Bind ViewModel.UnacknowledgedWheelOrEncoderError, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xEA3A;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+
+            <winui:NavigationViewItem x:Uid="Shell_Lidar" helpers:NavHelper.NavigateTo="Lidar"
+                                      Background="{x:Bind ViewModel.Lidar.Power, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
+                                      BorderBrush="{x:Bind ViewModel.Lidar.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE7C0;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+
+            <winui:NavigationViewItem x:Uid="Shell_Ultrasonic" helpers:NavHelper.NavigateTo="Ultrasonic"
+                                      Background="{x:Bind ViewModel.Ultrasonic.Power, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=LimeGreen }"
+                                      BorderBrush="{x:Bind ViewModel.Ultrasonic.Error.Unacknowledged, Mode=OneWay, Converter={StaticResource BooleanToColorConverter}, ConverterParameter=Red}" BorderThickness="5">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE957;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+
+            <winui:NavigationViewItem x:Uid="Shell_Power" helpers:NavHelper.NavigateTo="Power">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE7E8;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+        </winui:NavigationView.MenuItems>
+
+        <i:Interaction.Behaviors>
+            <behaviors:NavigationViewHeaderBehavior
+                x:Name="navigationViewHeaderBehavior"
+                DefaultHeader="{x:Bind ViewModel.Selected.Content, Mode=OneWay}">
+                <behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <TextBlock
+                                Text="{Binding}"
+                                Style="{ThemeResource TitleTextBlockStyle}"
+                                Margin="{StaticResource SmallLeftRightMargin}" />
+                        </Grid>
+                    </DataTemplate>
+                </behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
+            </behaviors:NavigationViewHeaderBehavior>
+            <ic:EventTriggerBehavior EventName="ItemInvoked">
+                <ic:InvokeCommandAction Command="{x:Bind ViewModel.ItemInvokedCommand}" />
+            </ic:EventTriggerBehavior>
+        </i:Interaction.Behaviors>
+
+        <Grid>
+            <Frame x:Name="shellFrame" />
+        </Grid>
+
+    </winui:NavigationView>
+</Page>

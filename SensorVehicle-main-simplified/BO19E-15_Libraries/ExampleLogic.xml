@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ExampleLogic</name>
+    </assembly>
+    <members>
+        <member name="M:ExampleLogic.ConceptLogics.CrossConnectedProportionalFeedback.RotateAwayFromObstruction(System.Threading.CancellationToken,System.Single,System.Int32)">
+            <summary>
+            Rotates away from obstruction
+            </summary>
+            <param name="cancellationToken">Used to exit loop if control logic stop is requested</param>
+            <param name="desiredFrontalClearance">Distance required in front for it to stop rotating (in meters)</param>
+            <param name="rotationSpeedPercentage">Value between -100 and +100</param>
+        </member>
+        <member name="P:ExampleLogic.ExampleLogicBase.Details">
+            <summary>
+            Contains the information that will be displayed in the GUI. 
+            It should be initialized, and all its fields set to your desired values in the constructor of the child-class.
+            </summary>
+        </member>
+    </members>
+</doc>
